@@ -1,4 +1,4 @@
-FROM gliderlabs/alpine:3.4
+FROM malice/alpine:tini
 
 MAINTAINER blacktop, https://github.com/blacktop
 
@@ -37,6 +37,6 @@ ADD http://www.eicar.org/download/eicar.com.txt /malware/EICAR
 
 WORKDIR /malware
 
-ENTRYPOINT ["/bin/avscan"]
+ENTRYPOINT ["gosu","malice","/sbin/tini","--","avscan"]
 
 CMD ["--help"]
