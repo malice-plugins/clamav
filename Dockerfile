@@ -27,7 +27,7 @@ RUN apk-install -t .build-deps \
   && go get \
   && go build -ldflags "-X main.Version=$(cat VERSION) -X main.BuildTime=$(date -u +%Y%m%d)" -o /bin/avscan \
   && rm -rf /go /usr/local/go /usr/lib/go /tmp/* \
-  && apk del --purge build-deps
+  && apk del --purge .build-deps
 
 # Update ClamAV Definitions
 RUN freshclam
