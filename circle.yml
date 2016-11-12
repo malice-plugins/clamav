@@ -13,6 +13,7 @@ dependencies:
 
 test:
   override:
+    - docker images --format "{{.Size}}" malice_clamav
     - docker run malice_clamav EICAR
 
 deployment:
