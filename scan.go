@@ -103,7 +103,7 @@ func getUpdatedDate() string {
 }
 
 func printStatus(resp gorequest.Response, body string, errs []error) {
-	fmt.Println(resp.Status)
+	fmt.Println(body)
 }
 
 func printMarkDownTable(clamav ClamAV) {
