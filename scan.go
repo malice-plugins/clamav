@@ -181,7 +181,10 @@ func main() {
 			Aliases: []string{"u"},
 			Usage:   "Update virus definitions",
 			Action: func(c *cli.Context) error {
-				ctx, cancel := context.WithTimeout(context.Background(), time.Duration(c.Int("timeout"))*time.Second)
+				ctx, cancel := context.WithTimeout(
+					context.Background(),
+					time.Duration(c.Int("timeout"))*time.Second,
+				)
 				defer cancel()
 
 				return updateAV(ctx)
@@ -190,7 +193,10 @@ func main() {
 	}
 	app.Action = func(c *cli.Context) error {
 
-		ctx, cancel := context.WithTimeout(context.Background(), time.Duration(c.Int("timeout"))*time.Second)
+		ctx, cancel := context.WithTimeout(
+			context.Background(),
+			time.Duration(c.Int("timeout"))*time.Second,
+		)
 		defer cancel()
 
 		path := c.Args().First()
