@@ -32,6 +32,8 @@ RUN apk-install -t .build-deps \
 # Update ClamAV Definitions
 RUN freshclam
 
+USER malice
+
 # Add EICAR Test Virus File to malware folder
 ADD http://www.eicar.org/download/eicar.com.txt /malware/EICAR
 
