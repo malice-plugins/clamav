@@ -46,13 +46,14 @@ type ResultsData struct {
 	Engine   string `json:"engine" structs:"engine"`
 	Known    string `json:"known" structs:"known"`
 	Updated  string `json:"updated" structs:"updated"`
+	Error    string `json:"error" structs:"error"`
 }
 
 // ParseClamAvOutput convert clamav output into ClamAV struct
 func ParseClamAvOutput(clamout string, err error) ResultsData {
 
 	if err != nil {
-		return ResultsData{}
+		return ResultsData{Error: err.Error()}
 	}
 
 	clamAV := ResultsData{}
