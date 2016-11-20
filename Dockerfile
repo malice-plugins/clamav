@@ -3,7 +3,7 @@ FROM malice/alpine:tini
 MAINTAINER blacktop, https://github.com/blacktop
 
 COPY . /go/src/github.com/maliceio/malice-clamav
-RUN apk-install clamav freshclam ca-certificates
+RUN apk-install clamav clamav-libunrar ca-certificates
 RUN apk-install -t .build-deps \
                     build-base \
                     mercurial \
