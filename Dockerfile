@@ -1,4 +1,4 @@
-FROM malice/alpine:tini
+FROM malice/alpine
 
 MAINTAINER blacktop, https://github.com/blacktop
 
@@ -38,6 +38,6 @@ RUN chown malice -R /malware
 
 WORKDIR /malware
 
-ENTRYPOINT ["gosu","malice","/sbin/tini","--","avscan"]
+ENTRYPOINT ["su-exec","malice","/sbin/tini","--","avscan"]
 
 CMD ["--help"]
