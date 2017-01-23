@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"net/http"
 	"os"
 	"strings"
 	"time"
@@ -12,6 +13,7 @@ import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/crackcomm/go-clitable"
 	"github.com/fatih/structs"
+	"github.com/gorilla/mux"
 	"github.com/maliceio/go-plugin-utils/database/elasticsearch"
 	"github.com/maliceio/go-plugin-utils/utils"
 	"github.com/parnurzeal/gorequest"
@@ -49,12 +51,25 @@ type ResultsData struct {
 	Error    string `json:"error" structs:"error"`
 }
 
+// AvScan performs antivirus scan
+func AvScan(path string, timeout int) ClamAV {
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(timeout)*time.Second)
+	defer cancel()
+
+	return ClamAV{
+		Results: ParseClamAvOutput(utils.RunCommand(ctx, "/usr/bin/clamscan", "--stdout", path)),
+	}
+}
+
 // ParseClamAvOutput convert clamav output into ClamAV struct
 func ParseClamAvOutput(clamout string, err error) ResultsData {
 
 	if err != nil {
 		return ResultsData{Error: err.Error()}
 	}
+
+	log.Debug("ClamAV Output: ", clamout)
 
 	clamAV := ResultsData{}
 
@@ -93,6 +108,15 @@ func ParseClamAvOutput(clamout string, err error) ResultsData {
 	return clamAV
 }
 
+func updateAV(ctx context.Context) error {
+	fmt.Println("Updating ClamAV...")
+	fmt.Println(utils.RunCommand(ctx, "freshclam"))
+	// Update UPDATED file
+	t := time.Now().Format("20060102")
+	err := ioutil.WriteFile("/opt/malice/UPDATED", []byte(t), 0644)
+	return err
+}
+
 func getUpdatedDate() string {
 	if _, err := os.Stat("/opt/malice/UPDATED"); os.IsNotExist(err) {
 		return BuildTime
@@ -100,10 +124,6 @@ func getUpdatedDate() string {
 	updated, err := ioutil.ReadFile("/opt/malice/UPDATED")
 	utils.Assert(err)
 	return string(updated)
-}
-
-func printStatus(resp gorequest.Response, body string, errs []error) {
-	fmt.Println(body)
 }
 
 func printMarkDownTable(clamav ClamAV) {
@@ -120,13 +140,54 @@ func printMarkDownTable(clamav ClamAV) {
 	table.Print()
 }
 
-func updateAV(ctx context.Context) error {
-	fmt.Println("Updating ClamAV...")
-	fmt.Println(utils.RunCommand(ctx, "freshclam"))
-	// Update UPDATED file
-	t := time.Now().Format("20060102")
-	err := ioutil.WriteFile("/opt/malice/UPDATED", []byte(t), 0644)
-	return err
+func printStatus(resp gorequest.Response, body string, errs []error) {
+	fmt.Println(body)
+}
+
+func webService() {
+	router := mux.NewRouter().StrictSlash(true)
+	router.HandleFunc("/scan", webAvScan).Methods("POST")
+	log.Info("web service listening on port :3993")
+	log.Fatal(http.ListenAndServe(":3993", router))
+}
+
+func webAvScan(w http.ResponseWriter, r *http.Request) {
+
+	r.ParseMultipartForm(32 << 20)
+	file, header, err := r.FormFile("malware")
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintln(w, "Please supply a valid file to scan.")
+		log.Error(err)
+	}
+	defer file.Close()
+
+	log.Debug("Uploaded fileName: ", header.Filename)
+
+	tmpfile, err := ioutil.TempFile("/malware", "web_")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer os.Remove(tmpfile.Name()) // clean up
+
+	data, err := ioutil.ReadAll(file)
+
+	if _, err = tmpfile.Write(data); err != nil {
+		log.Fatal(err)
+	}
+	if err = tmpfile.Close(); err != nil {
+		log.Fatal(err)
+	}
+
+	// Do AV scan
+	clamav := AvScan(tmpfile.Name(), 60)
+
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.WriteHeader(http.StatusOK)
+
+	if err := json.NewEncoder(w).Encode(clamav); err != nil {
+		log.Fatal(err)
+	}
 }
 
 func main() {
@@ -152,7 +213,7 @@ func main() {
 			Usage: "output as Markdown table",
 		},
 		cli.BoolFlag{
-			Name:   "post, p",
+			Name:   "callback, c",
 			Usage:  "POST results to Malice webhook",
 			EnvVar: "MALICE_ENDPOINT",
 		},
@@ -190,56 +251,61 @@ func main() {
 				return updateAV(ctx)
 			},
 		},
+		{
+			Name:  "web",
+			Usage: "Create a ClamAV scan web service",
+			Action: func(c *cli.Context) error {
+				webService()
+				return nil
+			},
+		},
 	}
 	app.Action = func(c *cli.Context) error {
-
-		ctx, cancel := context.WithTimeout(
-			context.Background(),
-			time.Duration(c.Int("timeout"))*time.Second,
-		)
-		defer cancel()
-
-		path := c.Args().First()
-
-		if _, err := os.Stat(path); os.IsNotExist(err) {
-			utils.Assert(err)
-		}
 
 		if c.Bool("verbose") {
 			log.SetLevel(log.DebugLevel)
 		}
 
-		clamav := ClamAV{
-			Results: ParseClamAvOutput(utils.RunCommand(ctx, "/usr/bin/clamscan", "--stdout", path)),
-		}
+		if c.Args().Present() {
 
-		// upsert into Database
-		elasticsearch.InitElasticSearch(elastic)
-		elasticsearch.WritePluginResultsToDatabase(elasticsearch.PluginResults{
-			ID:       utils.Getopt("MALICE_SCANID", utils.GetSHA256(path)),
-			Name:     name,
-			Category: category,
-			Data:     structs.Map(clamav.Results),
-		})
+			path := c.Args().First()
 
-		if c.Bool("table") {
-			printMarkDownTable(clamav)
-		} else {
-			fprotJSON, err := json.Marshal(clamav)
-			utils.Assert(err)
-			if c.Bool("post") {
-				request := gorequest.New()
-				if c.Bool("proxy") {
-					request = gorequest.New().Proxy(os.Getenv("MALICE_PROXY"))
-				}
-				request.Post(os.Getenv("MALICE_ENDPOINT")).
-					Set("X-Malice-ID", utils.Getopt("MALICE_SCANID", utils.GetSHA256(path))).
-					Send(string(fprotJSON)).
-					End(printStatus)
-
-				return nil
+			if _, err := os.Stat(path); os.IsNotExist(err) {
+				utils.Assert(err)
 			}
-			fmt.Println(string(fprotJSON))
+
+			clamav := AvScan(path, c.Int("timeout"))
+
+			// upsert into Database
+			elasticsearch.InitElasticSearch(elastic)
+			elasticsearch.WritePluginResultsToDatabase(elasticsearch.PluginResults{
+				ID:       utils.Getopt("MALICE_SCANID", utils.GetSHA256(path)),
+				Name:     name,
+				Category: category,
+				Data:     structs.Map(clamav.Results),
+			})
+
+			if c.Bool("table") {
+				printMarkDownTable(clamav)
+			} else {
+				clamavJSON, err := json.Marshal(clamav)
+				utils.Assert(err)
+				if c.Bool("post") {
+					request := gorequest.New()
+					if c.Bool("proxy") {
+						request = gorequest.New().Proxy(os.Getenv("MALICE_PROXY"))
+					}
+					request.Post(os.Getenv("MALICE_ENDPOINT")).
+						Set("X-Malice-ID", utils.Getopt("MALICE_SCANID", utils.GetSHA256(path))).
+						Send(string(clamavJSON)).
+						End(printStatus)
+
+					return nil
+				}
+				fmt.Println(string(clamavJSON))
+			}
+		} else {
+			log.Fatal(fmt.Errorf("Please supply a file to scan with malice/clamav"))
 		}
 		return nil
 	}

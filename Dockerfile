@@ -1,6 +1,6 @@
 FROM malice/alpine
 
-MAINTAINER blacktop, https://github.com/blacktop
+LABEL maintainer "https://github.com/blacktop"
 
 COPY . /go/src/github.com/maliceio/malice-clamav
 RUN apk-install clamav clamav-libunrar ca-certificates
@@ -34,6 +34,7 @@ RUN freshclam
 
 # Add EICAR Test Virus File to malware folder
 ADD http://www.eicar.org/download/eicar.com.txt /malware/EICAR
+
 RUN chown malice -R /malware
 
 WORKDIR /malware

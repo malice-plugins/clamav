@@ -15,7 +15,7 @@ dependencies:
 test:
   override:
     - docker images malice_clamav
-    - docker run malice_clamav EICAR
+    - docker run malice_clamav -V EICAR
 
 deployment:
   # master:
