@@ -21,12 +21,13 @@ Content-Type: application/json; charset=UTF-8
 Date: Sat, 21 Jan 2017 05:39:29 GMT
 
 {
-    "clamav": {
-        "database": "4477/13807",
-        "engine": "13.0.3114",
-        "infected": true,
-        "result": "Found Win32/DH{CGE?}",
-        "updated": "20170121"
-    }
+  "clamav": {
+    "infected": true,
+    "result": "Eicar-Test-Signature",
+    "engine": "0.99.2",
+    "known": "5630857",
+    "updated": "20170123",
+    "error": ""
+  }
 }
 ```
