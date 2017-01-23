@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -267,8 +268,8 @@ func main() {
 		}
 
 		if c.Args().Present() {
-
-			path := c.Args().First()
+			path, err := filepath.Abs(c.Args().First())
+			utils.Assert(err)
 
 			if _, err := os.Stat(path); os.IsNotExist(err) {
 				utils.Assert(err)
