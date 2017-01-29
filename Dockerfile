@@ -40,5 +40,4 @@ RUN chown malice -R /malware
 WORKDIR /malware
 
 ENTRYPOINT ["su-exec","malice","/sbin/tini","--","avscan"]
-
 CMD ["--help"]
