@@ -3,7 +3,10 @@
 
 .gitignore
 README.md
+README.md.bu
 LICENSE
 circle.yml
 CHANGELOG.md
 Makefile
+results.json
+docs/*
