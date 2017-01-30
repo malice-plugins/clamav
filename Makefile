@@ -17,5 +17,6 @@ test:
 	docker run --rm $(REPO)/$(NAME):$(VERSION) --help
 	docker run --rm $(REPO)/$(NAME):$(VERSION) -V EICAR > results.json
 	cat results.json | jq .
+	cat results.json | jq -r .$(NAME).markdown
 
 .PHONY: build size tags test

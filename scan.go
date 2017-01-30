@@ -27,6 +27,8 @@ var Version string
 // BuildTime stores the plugin's build time
 var BuildTime string
 
+var path string
+
 const (
 	name     = "clamav"
 	category = "av"
@@ -53,8 +55,18 @@ type ResultsData struct {
 	Markdown string `json:"markdown" structs:"markdown"`
 }
 
+func assert(err error) {
+	if err != nil {
+		log.WithFields(log.Fields{
+			"plugin":   name,
+			"category": category,
+			"path":     path,
+		}).Fatal(err)
+	}
+}
+
 // AvScan performs antivirus scan
-func AvScan(path string, timeout int) ClamAV {
+func AvScan(timeout int) ClamAV {
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(timeout)*time.Second)
 	defer cancel()
@@ -71,7 +83,11 @@ func ParseClamAvOutput(clamout string, err error) ResultsData {
 		return ResultsData{Error: err.Error()}
 	}
 
-	log.Debug("ClamAV Output: ", clamout)
+	log.WithFields(log.Fields{
+		"plugin":   name,
+		"category": category,
+		"path":     path,
+	}).Debug("ClamAV Output: ", clamout)
 
 	clamAV := ResultsData{}
 
@@ -124,7 +140,7 @@ func getUpdatedDate() string {
 		return BuildTime
 	}
 	updated, err := ioutil.ReadFile("/opt/malice/UPDATED")
-	utils.Assert(err)
+	assert(err)
 	return string(updated)
 }
 
@@ -187,7 +203,8 @@ func webAvScan(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Do AV scan
-	clamav := AvScan(tmpfile.Name(), 60)
+	path = tmpfile.Name()
+	clamav := AvScan(60)
 
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
@@ -269,19 +286,21 @@ func main() {
 	}
 	app.Action = func(c *cli.Context) error {
 
+		var err error
+
 		if c.Bool("verbose") {
 			log.SetLevel(log.DebugLevel)
 		}
 
 		if c.Args().Present() {
-			path, err := filepath.Abs(c.Args().First())
-			utils.Assert(err)
+			path, err = filepath.Abs(c.Args().First())
+			assert(err)
 
-			if _, err := os.Stat(path); os.IsNotExist(err) {
-				utils.Assert(err)
+			if _, err = os.Stat(path); os.IsNotExist(err) {
+				assert(err)
 			}
 
-			clamav := AvScan(path, c.Int("timeout"))
+			clamav := AvScan(c.Int("timeout"))
 
 			// upsert into Database
 			elasticsearch.InitElasticSearch(elastic)
@@ -299,7 +318,7 @@ func main() {
 				clamav.Results.Markdown = printMarkDownTable(clamav, true)
 				// convert to JSON
 				clamavJSON, err := json.Marshal(clamav)
-				utils.Assert(err)
+				assert(err)
 				if c.Bool("post") {
 					request := gorequest.New()
 					if c.Bool("proxy") {
@@ -321,5 +340,5 @@ func main() {
 	}
 
 	err := app.Run(os.Args)
-	utils.Assert(err)
+	assert(err)
 }

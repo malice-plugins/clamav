@@ -3,8 +3,8 @@ FROM malice/alpine
 LABEL maintainer "https://github.com/blacktop"
 
 COPY . /go/src/github.com/maliceio/malice-clamav
-RUN apk-install clamav clamav-libunrar ca-certificates
-RUN apk-install -t .build-deps \
+RUN apk --update add --no-cache clamav clamav-libunrar ca-certificates
+RUN apk --update add --no-cache -t .build-deps \
                     build-base \
                     mercurial \
                     musl-dev \
@@ -14,15 +14,9 @@ RUN apk-install -t .build-deps \
                     git \
                     gcc \
                     go \
-  && set -x \
-  && cd /tmp \
-  && wget https://raw.githubusercontent.com/maliceio/go-plugin-utils/master/scripts/upgrade-alpine-go.sh \
-  && chmod +x upgrade-alpine-go.sh \
-  && ./upgrade-alpine-go.sh \
   && echo "Building avscan Go binary..." \
   && cd /go/src/github.com/maliceio/malice-clamav \
   && export GOPATH=/go \
-  && export PATH=$GOPATH/bin:/usr/local/go/bin:$PATH \
   && go version \
   && go get \
   && go build -ldflags "-X main.Version=$(cat VERSION) -X main.BuildTime=$(date -u +%Y%m%d)" -o /bin/avscan \
