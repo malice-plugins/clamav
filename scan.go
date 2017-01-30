@@ -129,7 +129,6 @@ func getUpdatedDate() string {
 }
 
 func printMarkDownTable(clamav ClamAV, toString bool) string {
-	fmt.Println("#### ClamAV")
 	table := clitable.New([]string{"Infected", "Result", "Engine", "Updated"})
 	table.AddRow(map[string]interface{}{
 		"Infected": clamav.Results.Infected,
@@ -143,6 +142,7 @@ func printMarkDownTable(clamav ClamAV, toString bool) string {
 	if toString {
 		return table.String("ClamAV")
 	}
+	fmt.Println("#### ClamAV")
 	table.Print()
 	return ""
 }
