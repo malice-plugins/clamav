@@ -128,7 +128,7 @@ func getUpdatedDate() string {
 	return string(updated)
 }
 
-func printMarkDownTable(clamav ClamAV) string {
+func printMarkDownTable(clamav ClamAV, toString bool) string {
 	fmt.Println("#### ClamAV")
 	table := clitable.New([]string{"Infected", "Result", "Engine", "Updated"})
 	table.AddRow(map[string]interface{}{
@@ -139,9 +139,12 @@ func printMarkDownTable(clamav ClamAV) string {
 		"Updated": clamav.Results.Updated,
 	})
 	table.Markdown = true
-	table.Print()
 
-	return table.String()
+	if toString {
+		return table.String("ClamAV")
+	}
+	table.Print()
+	return ""
 }
 
 func printStatus(resp gorequest.Response, body string, errs []error) {
@@ -290,10 +293,10 @@ func main() {
 			})
 
 			if c.Bool("table") {
-				printMarkDownTable(clamav)
+				printMarkDownTable(clamav, false)
 			} else {
 				// add markdown output as a string
-				clamav.Results.Markdown = printMarkDownTable(clamav)
+				clamav.Results.Markdown = printMarkDownTable(clamav, true)
 				// convert to JSON
 				clamavJSON, err := json.Marshal(clamav)
 				utils.Assert(err)
