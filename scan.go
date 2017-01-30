@@ -12,9 +12,9 @@ import (
 	"time"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/crackcomm/go-clitable"
 	"github.com/fatih/structs"
 	"github.com/gorilla/mux"
+	"github.com/maliceio/go-plugin-utils/clitable"
 	"github.com/maliceio/go-plugin-utils/database/elasticsearch"
 	"github.com/maliceio/go-plugin-utils/utils"
 	"github.com/parnurzeal/gorequest"
@@ -50,6 +50,7 @@ type ResultsData struct {
 	Known    string `json:"known" structs:"known"`
 	Updated  string `json:"updated" structs:"updated"`
 	Error    string `json:"error" structs:"error"`
+	Markdown string `json:"markdown" structs:"markdown"`
 }
 
 // AvScan performs antivirus scan
@@ -127,7 +128,7 @@ func getUpdatedDate() string {
 	return string(updated)
 }
 
-func printMarkDownTable(clamav ClamAV) {
+func printMarkDownTable(clamav ClamAV) string {
 	fmt.Println("#### ClamAV")
 	table := clitable.New([]string{"Infected", "Result", "Engine", "Updated"})
 	table.AddRow(map[string]interface{}{
@@ -139,6 +140,8 @@ func printMarkDownTable(clamav ClamAV) {
 	})
 	table.Markdown = true
 	table.Print()
+
+	return table.String()
 }
 
 func printStatus(resp gorequest.Response, body string, errs []error) {
@@ -289,6 +292,9 @@ func main() {
 			if c.Bool("table") {
 				printMarkDownTable(clamav)
 			} else {
+				// add markdown output as a string
+				clamav.Results.Markdown = printMarkDownTable(clamav)
+				// convert to JSON
 				clamavJSON, err := json.Marshal(clamav)
 				utils.Assert(err)
 				if c.Bool("post") {
