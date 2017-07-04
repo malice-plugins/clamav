@@ -1,11 +1,11 @@
 malice-clamav
 =============
 
-[![Circle CI](https://circleci.com/gh/maliceio/malice-clamav.png?style=shield)](https://circleci.com/gh/maliceio/malice-clamav)
+[![Circle CI](https://circleci.com/gh/malice-plugins/clamav.png?style=shield)](https://circleci.com/gh/malice-plugins/clamav)
 [![License](http://img.shields.io/:license-mit-blue.svg)](http://doge.mit-license.org)
 [![Docker Stars](https://img.shields.io/docker/stars/malice/clamav.svg)](https://hub.docker.com/r/malice/clamav/)
 [![Docker Pulls](https://img.shields.io/docker/pulls/malice/clamav.svg)](https://hub.docker.com/r/malice/clamav/)
-[![Docker Image](https://img.shields.io/badge/docker image-171 MB-blue.svg)](https://hub.docker.com/r/malice/clamav/)
+[![Docker Image](https://img.shields.io/badge/docker%20image-188MB-blue.svg)](https://hub.docker.com/r/malice/clamav/)
 
 This repository contains a **Dockerfile** of [ClamAV](http://www.clamav.net/lang/en/) for [Docker](https://www.docker.io/)'s [trusted build](https://index.docker.io/u/malice/clamav/) published to the public [DockerHub](https://index.docker.io/).
 
@@ -73,7 +73,7 @@ Run 'clamav COMMAND --help' for more information on a command.
 }
 ```
 
-### STDOUT (Markdown Table):
+### Markdown:
 
 ---
 
@@ -88,24 +88,24 @@ Run 'clamav COMMAND --help' for more information on a command.
 Documentation
 -------------
 
--	[To write results to ElasticSearch](https://github.com/maliceio/malice-clamav/blob/master/docs/elasticsearch.md)
--	[To create a ClamAV scan micro-service](https://github.com/maliceio/malice-clamav/blob/master/docs/web.md)
--	[To post results to a webhook](https://github.com/maliceio/malice-clamav/blob/master/docs/callback.md)
--	[To update the AV definitions](https://github.com/maliceio/malice-clamav/blob/master/docs/update.md)
+-	[To write results to ElasticSearch](https://github.com/malice-plugins/clamav/blob/master/docs/elasticsearch.md)
+-	[To create a ClamAV scan micro-service](https://github.com/malice-plugins/clamav/blob/master/docs/web.md)
+-	[To post results to a webhook](https://github.com/malice-plugins/clamav/blob/master/docs/callback.md)
+-	[To update the AV definitions](https://github.com/malice-plugins/clamav/blob/master/docs/update.md)
 
 ### Issues
 
-Find a bug? Want more features? Find something missing in the documentation? Let me know! Please don't hesitate to [file an issue](https://github.com/maliceio/malice-clamav/issues/new).
+Find a bug? Want more features? Find something missing in the documentation? Let me know! Please don't hesitate to [file an issue](https://github.com/malice-plugins/clamav/issues/new).
 
 ### CHANGELOG
 
-See [`CHANGELOG.md`](https://github.com/maliceio/malice-clamav/blob/master/CHANGELOG.md)
+See [`CHANGELOG.md`](https://github.com/malice-plugins/clamav/blob/master/CHANGELOG.md)
 
 ### Contributing
 
-[See all contributors on GitHub](https://github.com/maliceio/malice-clamav/graphs/contributors).
+[See all contributors on GitHub](https://github.com/malice-plugins/clamav/graphs/contributors).
 
-Please update the [CHANGELOG.md](https://github.com/maliceio/malice-clamav/blob/master/CHANGELOG.md) and submit a [Pull Request on GitHub](https://help.github.com/articles/using-pull-requests/).
+Please update the [CHANGELOG.md](https://github.com/malice-plugins/clamav/blob/master/CHANGELOG.md) and submit a [Pull Request on GitHub](https://help.github.com/articles/using-pull-requests/).
 ### License
 
 MIT Copyright (c) 2016-2017 **blacktop**

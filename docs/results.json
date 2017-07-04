@@ -1,0 +1,11 @@
+{
+  "clamav": {
+    "infected": false,
+    "result": "",
+    "engine": "",
+    "known": "",
+    "updated": "",
+    "error": "exit status 1",
+    "markdown": "### ClamAV\n| Infected | Result | Engine | Updated |\n| -------- | ------ | ------ | ------- |\n| false    |        |        |         |"
+  }
+}

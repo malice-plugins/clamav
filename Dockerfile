@@ -2,8 +2,13 @@ FROM malice/alpine
 
 LABEL maintainer "https://github.com/blacktop"
 
-COPY . /go/src/github.com/maliceio/malice-clamav
-RUN apk --update add --no-cache clamav clamav-libunrar ca-certificates
+LABEL malice.plugin.repository = "https://github.com/malice-plugins/clamav.git"
+LABEL malice.plugin.category="av"
+LABEL malice.plugin.mime="*"
+LABEL malice.plugin.docker.engine="*"
+
+COPY . /go/src/github.com/malice-plugins/clamav
+RUN apk --update add --no-cache clamav ca-certificates
 RUN apk --update add --no-cache -t .build-deps \
                     build-base \
                     mercurial \
@@ -15,7 +20,7 @@ RUN apk --update add --no-cache -t .build-deps \
                     gcc \
                     go \
   && echo "Building avscan Go binary..." \
-  && cd /go/src/github.com/maliceio/malice-clamav \
+  && cd /go/src/github.com/malice-plugins/clamav \
   && export GOPATH=/go \
   && go version \
   && go get \

@@ -1,9 +1,11 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
+	"html/template"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -14,7 +16,6 @@ import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/fatih/structs"
 	"github.com/gorilla/mux"
-	"github.com/maliceio/go-plugin-utils/clitable"
 	"github.com/maliceio/go-plugin-utils/database/elasticsearch"
 	"github.com/maliceio/go-plugin-utils/utils"
 	"github.com/parnurzeal/gorequest"
@@ -52,16 +53,19 @@ type ResultsData struct {
 	Known    string `json:"known" structs:"known"`
 	Updated  string `json:"updated" structs:"updated"`
 	Error    string `json:"error" structs:"error"`
-	Markdown string `json:"markdown" structs:"markdown"`
+	MarkDown string `json:"markdown,omitempty" structs:"markdown,omitempty"`
 }
 
 func assert(err error) {
 	if err != nil {
-		log.WithFields(log.Fields{
-			"plugin":   name,
-			"category": category,
-			"path":     path,
-		}).Fatal(err)
+		// ClamAV exits with error status 1 if it finds a virus
+		if err.Error() != "exit status 1" {
+			log.WithFields(log.Fields{
+				"plugin":   name,
+				"category": category,
+				"path":     path,
+			}).Fatal(err)
+		}
 	}
 }
 
@@ -144,23 +148,17 @@ func getUpdatedDate() string {
 	return string(updated)
 }
 
-func printMarkDownTable(clamav ClamAV, toString bool) string {
-	table := clitable.New([]string{"Infected", "Result", "Engine", "Updated"})
-	table.AddRow(map[string]interface{}{
-		"Infected": clamav.Results.Infected,
-		"Result":   clamav.Results.Result,
-		"Engine":   clamav.Results.Engine,
-		// "Known":    clamav.Results.Known,
-		"Updated": clamav.Results.Updated,
-	})
-	table.Markdown = true
+func generateMarkDownTable(c ClamAV) string {
+	var tplOut bytes.Buffer
 
-	if toString {
-		return table.String("ClamAV")
+	t := template.Must(template.New("comodo").Parse(tpl))
+
+	err := t.Execute(&tplOut, c)
+	if err != nil {
+		log.Println("executing template:", err)
 	}
-	fmt.Println("#### ClamAV")
-	table.Print()
-	return ""
+
+	return tplOut.String()
 }
 
 func printStatus(resp gorequest.Response, body string, errs []error) {
@@ -194,6 +192,7 @@ func webAvScan(w http.ResponseWriter, r *http.Request) {
 	defer os.Remove(tmpfile.Name()) // clean up
 
 	data, err := ioutil.ReadAll(file)
+	assert(err)
 
 	if _, err = tmpfile.Write(data); err != nil {
 		log.Fatal(err)
@@ -301,6 +300,7 @@ func main() {
 			}
 
 			clamav := AvScan(c.Int("timeout"))
+			clamav.Results.MarkDown = generateMarkDownTable(clamav)
 
 			// upsert into Database
 			elasticsearch.InitElasticSearch(elastic)
@@ -312,11 +312,10 @@ func main() {
 			})
 
 			if c.Bool("table") {
-				printMarkDownTable(clamav, false)
+				fmt.Println(clamav.Results.MarkDown)
 			} else {
-				// add markdown output as a string
-				clamav.Results.Markdown = printMarkDownTable(clamav, true)
 				// convert to JSON
+				clamav.Results.MarkDown = ""
 				clamavJSON, err := json.Marshal(clamav)
 				assert(err)
 				if c.Bool("post") {

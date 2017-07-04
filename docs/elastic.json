@@ -1,0 +1,37 @@
+{
+  "took": 44,
+  "timed_out": false,
+  "_shards": {
+    "total": 1,
+    "successful": 1,
+    "failed": 0
+  },
+  "hits": {
+    "total": 1,
+    "max_score": 1,
+    "hits": [
+      {
+        "_index": "malice",
+        "_type": "samples",
+        "_id": "AV0PSezpvZ9PEIChN7v2",
+        "_score": 1,
+        "_source": {
+          "plugins": {
+            "av": {
+              "clamav": {
+                "engine": "",
+                "error": "exit status 1",
+                "infected": false,
+                "known": "",
+                "markdown": "",
+                "result": "",
+                "updated": ""
+              }
+            }
+          },
+          "scan_date": "2017-07-04T20:28:09.314006996Z"
+        }
+      }
+    ]
+  }
+}
