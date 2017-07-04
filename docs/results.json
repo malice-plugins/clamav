@@ -1,11 +1,10 @@
 {
   "clamav": {
-    "infected": false,
-    "result": "",
-    "engine": "",
-    "known": "",
-    "updated": "",
-    "error": "exit status 1",
-    "markdown": "### ClamAV\n| Infected | Result | Engine | Updated |\n| -------- | ------ | ------ | ------- |\n| false    |        |        |         |"
+    "infected": true,
+    "result": "Eicar-Test-Signature",
+    "engine": "0.99.2",
+    "known": "6299388",
+    "updated": "20170704",
+    "error": ""
   }
 }

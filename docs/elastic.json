@@ -1,5 +1,5 @@
 {
-  "took": 44,
+  "took": 46,
   "timed_out": false,
   "_shards": {
     "total": 1,
@@ -13,23 +13,23 @@
       {
         "_index": "malice",
         "_type": "samples",
-        "_id": "AV0PSezpvZ9PEIChN7v2",
+        "_id": "AV0PXNQO-6tpIo8pgPpD",
         "_score": 1,
         "_source": {
           "plugins": {
             "av": {
               "clamav": {
-                "engine": "",
-                "error": "exit status 1",
-                "infected": false,
-                "known": "",
-                "markdown": "",
-                "result": "",
-                "updated": ""
+                "engine": "0.99.2",
+                "error": "",
+                "infected": true,
+                "known": "6299388",
+                "markdown": "#### ClamAV\n| Infected      | Result      | Engine      | Updated      |\n|:-------------:|:-----------:|:-----------:|:------------:|\n| true | Eicar-Test-Signature | 0.99.2 | 20170704 |\n",
+                "result": "Eicar-Test-Signature",
+                "updated": "20170704"
               }
             }
           },
-          "scan_date": "2017-07-04T20:28:09.314006996Z"
+          "scan_date": "2017-07-04T20:48:48.133941404Z"
         }
       }
     ]

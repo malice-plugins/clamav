@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 	"time"
@@ -69,14 +70,43 @@ func assert(err error) {
 	}
 }
 
+// RunCommand runs cmd on file
+func RunCommand(ctx context.Context, cmd string, args ...string) (string, error) {
+
+	var c *exec.Cmd
+
+	if ctx != nil {
+		c = exec.CommandContext(ctx, cmd, args...)
+	} else {
+		c = exec.Command(cmd, args...)
+	}
+
+	output, err := c.CombinedOutput()
+	if err != nil {
+		return string(output), err
+	}
+
+	// check for exec context timeout
+	if ctx != nil {
+		if ctx.Err() == context.DeadlineExceeded {
+			return "", fmt.Errorf("command %s timed out", cmd)
+		}
+	}
+
+	return string(output), nil
+}
+
 // AvScan performs antivirus scan
 func AvScan(timeout int) ClamAV {
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(timeout)*time.Second)
 	defer cancel()
 
+	results, err := utils.RunCommand(ctx, "/usr/bin/clamscan", "--stdout", path)
+	assert(err)
+
 	return ClamAV{
-		Results: ParseClamAvOutput(utils.RunCommand(ctx, "/usr/bin/clamscan", "--stdout", path)),
+		Results: ParseClamAvOutput(results, nil),
 	}
 }
 
