@@ -297,7 +297,7 @@ func main() {
 			Action: func(c *cli.Context) error {
 				ctx, cancel := context.WithTimeout(
 					context.Background(),
-					time.Duration(c.Int("timeout"))*time.Second,
+					time.Duration(c.GlobalInt("timeout"))*time.Second,
 				)
 				defer cancel()
 
