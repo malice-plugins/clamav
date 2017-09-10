@@ -29,7 +29,9 @@ RUN apk --update add --no-cache -t .build-deps \
   && apk del --purge .build-deps
 
 # Update ClamAV Definitions
-RUN freshclam
+RUN mkdir -p /opt/malice \
+  && chown malice /opt/malice \
+  && freshclam
 
 # Add EICAR Test Virus File to malware folder
 ADD http://www.eicar.org/download/eicar.com.txt /malware/EICAR
