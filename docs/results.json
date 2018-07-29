@@ -1,10 +1,10 @@
 {
   "clamav": {
     "infected": true,
-    "result": "Eicar-Test-Signature",
-    "engine": "0.99.2",
-    "known": "6303513",
-    "updated": "20170910",
+    "result": "Win.Trojan.Backspace-1",
+    "engine": "0.100.0",
+    "known": "6589547",
+    "updated": "20180729",
     "error": ""
   }
 }

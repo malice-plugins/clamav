@@ -10,21 +10,21 @@ LABEL malice.plugin.docker.engine="*"
 COPY . /go/src/github.com/malice-plugins/clamav
 RUN apk --update add --no-cache clamav ca-certificates
 RUN apk --update add --no-cache -t .build-deps \
-                    build-base \
-                    mercurial \
-                    musl-dev \
-                    openssl \
-                    bash \
-                    wget \
-                    git \
-                    gcc \
-                    go \
+  build-base \
+  mercurial \
+  musl-dev \
+  openssl \
+  bash \
+  wget \
+  git \
+  gcc \
+  go \
   && echo "Building avscan Go binary..." \
   && cd /go/src/github.com/malice-plugins/clamav \
   && export GOPATH=/go \
   && go version \
   && go get \
-  && go build -ldflags "-X main.Version=$(cat VERSION) -X main.BuildTime=$(date -u +%Y%m%d)" -o /bin/avscan \
+  && go build -ldflags "-s -w -X main.Version=$(cat VERSION) -X main.BuildTime=$(date -u +%Y%m%d)" -o /bin/avscan \
   && rm -rf /go /usr/local/go /usr/lib/go /tmp/* \
   && apk del --purge .build-deps
 

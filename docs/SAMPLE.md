@@ -1,5 +1,5 @@
 #### ClamAV
 | Infected      | Result      | Engine      | Updated      |
 |:-------------:|:-----------:|:-----------:|:------------:|
-| true | Eicar-Test-Signature | 0.99.2 | 20170910 |
+| true | Win.Trojan.Backspace-1 | 0.100.0 | 20180729 |
 

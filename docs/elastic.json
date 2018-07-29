@@ -1,9 +1,10 @@
 {
-  "took": 44,
+  "took": 49,
   "timed_out": false,
   "_shards": {
     "total": 1,
     "successful": 1,
+    "skipped": 0,
     "failed": 0
   },
   "hits": {
@@ -13,23 +14,23 @@
       {
         "_index": "malice",
         "_type": "samples",
-        "_id": "AV5syIjaJrJgw1JGBhq3",
+        "_id": "YkfZ42QByCjaGMGycwSj",
         "_score": 1,
         "_source": {
           "plugins": {
             "av": {
               "clamav": {
-                "engine": "0.99.2",
+                "engine": "0.100.0",
                 "error": "",
                 "infected": true,
-                "known": "6303513",
-                "markdown": "#### ClamAV\n| Infected      | Result      | Engine      | Updated      |\n|:-------------:|:-----------:|:-----------:|:------------:|\n| true | Eicar-Test-Signature | 0.99.2 | 20170910 |\n",
-                "result": "Eicar-Test-Signature",
-                "updated": "20170910"
+                "known": "6589547",
+                "markdown": "#### ClamAV\n| Infected      | Result      | Engine      | Updated      |\n|:-------------:|:-----------:|:-----------:|:------------:|\n| true | Win.Trojan.Backspace-1 | 0.100.0 | 20180729 |\n",
+                "result": "Win.Trojan.Backspace-1",
+                "updated": "20180729"
               }
             }
           },
-          "scan_date": "2017-09-10T17:13:55.154500489Z"
+          "scan_date": "2018-07-29T02:23:56.315748064Z"
         }
       }
     ]

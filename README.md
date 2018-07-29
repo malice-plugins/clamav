@@ -1,22 +1,21 @@
-malice-clamav
-=============
+# clamav
 
 [![Circle CI](https://circleci.com/gh/malice-plugins/clamav.png?style=shield)](https://circleci.com/gh/malice-plugins/clamav)
 [![License](http://img.shields.io/:license-mit-blue.svg)](http://doge.mit-license.org)
 [![Docker Stars](https://img.shields.io/docker/stars/malice/clamav.svg)](https://hub.docker.com/r/malice/clamav/)
 [![Docker Pulls](https://img.shields.io/docker/pulls/malice/clamav.svg)](https://hub.docker.com/r/malice/clamav/)
-[![Docker Image](https://img.shields.io/badge/docker%20image-188MB-blue.svg)](https://hub.docker.com/r/malice/clamav/)
+[![Docker Image](https://img.shields.io/badge/docker%20image-203MB-blue.svg)](https://hub.docker.com/r/malice/clamav/)
 
 This repository contains a **Dockerfile** of [ClamAV](http://www.clamav.net/lang/en/) for [Docker](https://www.docker.io/)'s [trusted build](https://index.docker.io/u/malice/clamav/) published to the public [DockerHub](https://index.docker.io/).
 
 ### Dependencies
 
--	[malice/alpine](https://hub.docker.com/r/malice/alpine/)
+- [malice/alpine](https://hub.docker.com/r/malice/alpine/)
 
 ### Installation
 
-1.	Install [Docker](https://www.docker.io/).
-2.	Download [trusted build](https://hub.docker.com/r/malice/clamav/) from public [DockerHub](https://hub.docker.com): `docker pull malice/clamav`
+1.  Install [Docker](https://www.docker.io/).
+2.  Download [trusted build](https://hub.docker.com/r/malice/clamav/) from public [DockerHub](https://hub.docker.com): `docker pull malice/clamav`
 
 ### Usage
 
@@ -43,14 +42,14 @@ Options:
   --table, -t	       output as Markdown table
   --callback, -c	    POST results to Malice webhook [$MALICE_ENDPOINT]
   --proxy, -x	       proxy settings for Malice webhook endpoint [$MALICE_PROXY]
-  --timeout value       malice plugin timeout (in seconds) (default: 60) [$MALICE_TIMEOUT]    
-  --elasitcsearch value elasitcsearch address for Malice to store results [$MALICE_ELASTICSEARCH]   
+  --timeout value       malice plugin timeout (in seconds) (default: 60) [$MALICE_TIMEOUT]
+  --elasitcsearch value elasitcsearch address for Malice to store results [$MALICE_ELASTICSEARCH]
   --help, -h	        show help
   --version, -v	     print the version
 
 Commands:
   update	Update virus definitions
-  web       Create a ClamAV scan web service  
+  web       Create a ClamAV scan web service
   help		Shows a list of commands or help for one command
 
 Run 'clamav COMMAND --help' for more information on a command.
@@ -58,7 +57,7 @@ Run 'clamav COMMAND --help' for more information on a command.
 
 ## Sample Output
 
-### JSON:
+### [JSON](https://github.com/malice-plugins/clamav/blob/master/docs/results.json)
 
 ```json
 {
@@ -73,25 +72,24 @@ Run 'clamav COMMAND --help' for more information on a command.
 }
 ```
 
-### Markdown:
+### [Markdown](https://github.com/malice-plugins/clamav/blob/master/docs/SAMPLE.md)
 
 ---
 
 #### ClamAV
 
 | Infected | Result               | Engine | Updated  |
-|----------|----------------------|--------|----------|
+| -------- | -------------------- | ------ | -------- |
 | true     | Eicar-Test-Signature | 0.99.2 | 20170123 |
 
 ---
 
-Documentation
--------------
+## Documentation
 
--	[To write results to ElasticSearch](https://github.com/malice-plugins/clamav/blob/master/docs/elasticsearch.md)
--	[To create a ClamAV scan micro-service](https://github.com/malice-plugins/clamav/blob/master/docs/web.md)
--	[To post results to a webhook](https://github.com/malice-plugins/clamav/blob/master/docs/callback.md)
--	[To update the AV definitions](https://github.com/malice-plugins/clamav/blob/master/docs/update.md)
+- [To write results to ElasticSearch](https://github.com/malice-plugins/clamav/blob/master/docs/elasticsearch.md)
+- [To create a ClamAV scan micro-service](https://github.com/malice-plugins/clamav/blob/master/docs/web.md)
+- [To post results to a webhook](https://github.com/malice-plugins/clamav/blob/master/docs/callback.md)
+- [To update the AV definitions](https://github.com/malice-plugins/clamav/blob/master/docs/update.md)
 
 ### Issues
 
@@ -106,6 +104,7 @@ See [`CHANGELOG.md`](https://github.com/malice-plugins/clamav/blob/master/CHANGE
 [See all contributors on GitHub](https://github.com/malice-plugins/clamav/graphs/contributors).
 
 Please update the [CHANGELOG.md](https://github.com/malice-plugins/clamav/blob/master/CHANGELOG.md) and submit a [Pull Request on GitHub](https://help.github.com/articles/using-pull-requests/).
+
 ### License
 
-MIT Copyright (c) 2016-2017 **blacktop**
+MIT Copyright (c) 2016 **blacktop**
