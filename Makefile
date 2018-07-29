@@ -25,7 +25,7 @@ tags:
 
 .PHONY: ssh
 ssh:
-	@docker run --init -it --rm --entrypoint=bash $(ORG)/$(NAME):$(VERSION)
+	@docker run --init -it --rm -v $(PWD):/malware --entrypoint=bash $(ORG)/$(NAME):$(VERSION)
 
 .PHONY: tar
 tar:
@@ -54,7 +54,7 @@ endif
 
 .PHONY: malware
 malware:
-ifeq (,$(wildcard test/malware))
+ifeq (,$(wildcard $(MALWARE)))
 	wget https://github.com/maliceio/malice-av/raw/master/samples/befb88b89c2eb401900a68e9f5b78764203f2b48264fcc3f7121bf04a57fd408 -O $(MALWARE)
 	cd tests; echo "TEST" > not.malware
 endif
