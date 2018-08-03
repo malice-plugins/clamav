@@ -90,6 +90,7 @@ test_web: malware stop
 	@docker run --init -d --name $(NAME) -p 3993:3993 -v `pwd`/rules:/rules $(ORG)/$(NAME):$(VERSION) -V web
 	http -f localhost:3993/scan malware@$(MALWARE)
 	http -f localhost:3993/scan malware@$(NOT_MALWARE)
+	@docker container rm -f $(NAME)
 
 .PHONY: stop
 stop:
