@@ -3,9 +3,11 @@ ORG=malice
 NAME=clamav
 CATEGORY=av
 VERSION=$(shell cat VERSION)
-MALWARE=tests/malware
 
-all: build size tag test test_markdown
+MALWARE=tests/malware
+NOT_MALWARE=tests/not.malware
+
+all: build size tag test_all
 
 .PHONY: build
 build:
@@ -45,12 +47,11 @@ update:
 .PHONY: start_elasticsearch
 start_elasticsearch:
 ifeq ("$(shell docker inspect -f {{.State.Running}} elasticsearch)", "true")
-	@echo "===> elasticsearch already running"
-else
-	@echo "===> Starting elasticsearch"
+	@echo "===> elasticsearch already running.  Stopping now..."
 	@docker rm -f elasticsearch || true
-	@docker run --init -d --name elasticsearch -p 9200:9200 malice/elasticsearch:6.3; sleep 10
 endif
+	@echo "===> Starting elasticsearch"
+	@docker run --init -d --name elasticsearch -p 9200:9200 malice/elasticsearch:6.3; sleep 15
 
 .PHONY: malware
 malware:
@@ -58,6 +59,9 @@ ifeq (,$(wildcard $(MALWARE)))
 	wget https://github.com/maliceio/malice-av/raw/master/samples/befb88b89c2eb401900a68e9f5b78764203f2b48264fcc3f7121bf04a57fd408 -O $(MALWARE)
 	cd tests; echo "TEST" > not.malware
 endif
+
+.PHONY: test_all
+test_all: test test_elastic test_markdown test_web
 
 .PHONY: test
 test: malware
@@ -75,10 +79,22 @@ test_elastic: start_elasticsearch malware
 	http localhost:9200/malice/_search | jq . > docs/elastic.json
 
 .PHONY: test_markdown
-test_markdown: test_elastic
+test_markdown:
 	@echo "===> ${NAME} test_markdown"
 	# http localhost:9200/malice/_search query:=@docs/query.json | jq . > docs/elastic.json
 	cat docs/elastic.json | jq -r '.hits.hits[] ._source.plugins.${CATEGORY}.${NAME}.markdown' > docs/SAMPLE.md
+
+.PHONY: test_web
+test_web: malware stop
+	@echo "===> ${NAME} web service"
+	@docker run --init -d --name $(NAME) -p 3993:3993 -v `pwd`/rules:/rules $(ORG)/$(NAME):$(VERSION) -V web
+	http -f localhost:3993/scan malware@$(MALWARE)
+	http -f localhost:3993/scan malware@$(NOT_MALWARE)
+
+.PHONY: stop
+stop:
+	@echo "===> Stopping container ${NAME}"
+	@docker container rm -f $(NAME) || true
 
 .PHONY: circle
 circle: ci-size
