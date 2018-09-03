@@ -1,21 +1,23 @@
-# clamav
+# malice-clamav
 
 [![Circle CI](https://circleci.com/gh/malice-plugins/clamav.png?style=shield)](https://circleci.com/gh/malice-plugins/clamav)
 [![License](http://img.shields.io/:license-mit-blue.svg)](http://doge.mit-license.org)
 [![Docker Stars](https://img.shields.io/docker/stars/malice/clamav.svg)](https://hub.docker.com/r/malice/clamav/)
 [![Docker Pulls](https://img.shields.io/docker/pulls/malice/clamav.svg)](https://hub.docker.com/r/malice/clamav/)
-[![Docker Image](https://img.shields.io/badge/docker%20image-203MB-blue.svg)](https://hub.docker.com/r/malice/clamav/)
+[![Docker Image](https://img.shields.io/badge/docker%20image-205MB-blue.svg)](https://hub.docker.com/r/malice/clamav/)
 
-This repository contains a **Dockerfile** of [ClamAV](http://www.clamav.net/lang/en/) for [Docker](https://www.docker.io/)'s [trusted build](https://index.docker.io/u/malice/clamav/) published to the public [DockerHub](https://index.docker.io/).
+Malice ClamAV AntiVirus
+
+> This repository contains a **Dockerfile** of [ClamAV](http://www.clamav.net/lang/en/) for [Docker](https://www.docker.io/)'s [trusted build](https://index.docker.io/u/malice/clamav/) published to the public [DockerHub](https://index.docker.io/).
 
 ### Dependencies
 
 - [malice/alpine](https://hub.docker.com/r/malice/alpine/)
 
-### Installation
+## Installation
 
-1.  Install [Docker](https://www.docker.io/).
-2.  Download [trusted build](https://hub.docker.com/r/malice/clamav/) from public [DockerHub](https://hub.docker.com): `docker pull malice/clamav`
+1. Install [Docker](https://www.docker.io/).
+2. Download [trusted build](https://hub.docker.com/r/malice/clamav/) from public [DockerHub](https://hub.docker.com): `docker pull malice/clamav`
 
 ### Usage
 
@@ -23,7 +25,7 @@ This repository contains a **Dockerfile** of [ClamAV](http://www.clamav.net/lang
 docker run --rm malice/clamav EICAR
 ```
 
-#### Or link your own malware folder:
+### Or link your own malware folder:
 
 ```bash
 $ docker run --rm -v /path/to/malware:/malware:ro malice/clamav FILE
@@ -32,25 +34,25 @@ Usage: clamav [OPTIONS] COMMAND [arg...]
 
 Malice ClamAV Plugin
 
-Version: v0.1.0, BuildTime: 20160214
+Version: v0.1.0, BuildTime: 20180903
 
 Author:
   blacktop - <https://github.com/blacktop>
 
 Options:
-  --verbose, -V         verbose output
-  --table, -t	       output as Markdown table
-  --callback, -c	    POST results to Malice webhook [$MALICE_ENDPOINT]
-  --proxy, -x	       proxy settings for Malice webhook endpoint [$MALICE_PROXY]
-  --timeout value       malice plugin timeout (in seconds) (default: 60) [$MALICE_TIMEOUT]
-  --elasitcsearch value elasitcsearch address for Malice to store results [$MALICE_ELASTICSEARCH]
-  --help, -h	        show help
-  --version, -v	     print the version
+  --verbose, -V          verbose output
+  --table, -t            output as Markdown table
+  --callback, -c         POST results to Malice webhook [$MALICE_ENDPOINT]
+  --proxy, -x            proxy settings for Malice webhook endpoint [$MALICE_PROXY]
+  --elasticsearch value  elasticsearch url for Malice to store results [$MALICE_ELASTICSEARCH_URL]
+  --timeout value        malice plugin timeout (in seconds) (default: 60) [$MALICE_TIMEOUT]
+  --help, -h             show help
+  --version, -v          print the version
 
 Commands:
-  update	Update virus definitions
-  web       Create a ClamAV scan web service
-  help		Shows a list of commands or help for one command
+  update  Update virus definitions
+  web     Create a ClamAV scan web service
+  help    Shows a list of commands or help for one command
 
 Run 'clamav COMMAND --help' for more information on a command.
 ```
@@ -91,20 +93,20 @@ Run 'clamav COMMAND --help' for more information on a command.
 - [To post results to a webhook](https://github.com/malice-plugins/clamav/blob/master/docs/callback.md)
 - [To update the AV definitions](https://github.com/malice-plugins/clamav/blob/master/docs/update.md)
 
-### Issues
+## Issues
 
 Find a bug? Want more features? Find something missing in the documentation? Let me know! Please don't hesitate to [file an issue](https://github.com/malice-plugins/clamav/issues/new).
 
-### CHANGELOG
+## CHANGELOG
 
 See [`CHANGELOG.md`](https://github.com/malice-plugins/clamav/blob/master/CHANGELOG.md)
 
-### Contributing
+## Contributing
 
 [See all contributors on GitHub](https://github.com/malice-plugins/clamav/graphs/contributors).
 
 Please update the [CHANGELOG.md](https://github.com/malice-plugins/clamav/blob/master/CHANGELOG.md) and submit a [Pull Request on GitHub](https://help.github.com/articles/using-pull-requests/).
 
-### License
+## License
 
 MIT Copyright (c) 2016 **blacktop**

@@ -1,5 +1,5 @@
 {
-  "took": 49,
+  "took": 56,
   "timed_out": false,
   "_shards": {
     "total": 1,
@@ -8,29 +8,51 @@
     "failed": 0
   },
   "hits": {
-    "total": 1,
+    "total": 2,
     "max_score": 1,
     "hits": [
       {
         "_index": "malice",
         "_type": "samples",
-        "_id": "YkfZ42QByCjaGMGycwSj",
+        "_id": "P_X3nGUB6q1lF5fOM-om",
         "_score": 1,
         "_source": {
           "plugins": {
             "av": {
               "clamav": {
-                "engine": "0.100.0",
+                "engine": "0.100.1",
                 "error": "",
                 "infected": true,
-                "known": "6589547",
-                "markdown": "#### ClamAV\n| Infected      | Result      | Engine      | Updated      |\n|:-------------:|:-----------:|:-----------:|:------------:|\n| true | Win.Trojan.Backspace-1 | 0.100.0 | 20180729 |\n",
+                "known": "6632715",
+                "markdown": "#### ClamAV\n| Infected      | Result      | Engine      | Updated      |\n|:-------------:|:-----------:|:-----------:|:------------:|\n| true | Win.Trojan.Backspace-1 | 0.100.1 | 20180903 |\n",
                 "result": "Win.Trojan.Backspace-1",
-                "updated": "20180729"
+                "updated": "20180903"
               }
             }
           },
-          "scan_date": "2018-07-29T02:23:56.315748064Z"
+          "scan_date": "2018-09-03T01:06:10.843420049Z"
+        }
+      },
+      {
+        "_index": "malice",
+        "_type": "samples",
+        "_id": "QPX3nGUB6q1lF5fOfOo3",
+        "_score": 1,
+        "_source": {
+          "plugins": {
+            "av": {
+              "clamav": {
+                "engine": "0.100.1",
+                "error": "",
+                "infected": false,
+                "known": "6632715",
+                "markdown": "#### ClamAV\n| Infected      | Result      | Engine      | Updated      |\n|:-------------:|:-----------:|:-----------:|:------------:|\n| false |  | 0.100.1 | 20180903 |\n",
+                "result": "",
+                "updated": "20180903"
+              }
+            }
+          },
+          "scan_date": "2018-09-03T01:06:29.557182927Z"
         }
       }
     ]
